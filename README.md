@@ -6,6 +6,16 @@ ___
 
 #### Sample Usage
 ```cpp
-SubtitleParserFactory *subParserFactory = new SubtitleParserFactory("filename.srt");
-SubtitleParser *parser = subParserFactory->getParser();
+
+	SubtitleParserFactory *subParserFactory = new SubtitleParserFactory(argv[1]);
+    std::vector<SubtitleItem*> sub = parser->getSubtitles();
+
+    ofstream myfile;
+    myfile.open ("out.srt");
+
+    for(SubtitleItem * element : sub)
+    	myfile<<element->getStartTime()<<" +++ "<<element->getEndTime()<<"\n"<<element->getText()<<"\n";
+
+    string data = parser->getFileData();
+    cout<<data;
 ```
