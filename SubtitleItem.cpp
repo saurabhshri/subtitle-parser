@@ -153,7 +153,7 @@ bool SubtitleItem::getIgnoreStatus() const
 
 void SubtitleItem::extractInfo(bool keepHTML = 0, bool doNotIgnoreNonDialogues = 0, bool doNotRemoveSpeakerNames = 0)
 {
-    std::string output;
+    std::string output = _text;
 
     //stripping HTML tags
     if(!keepHTML)
@@ -235,7 +235,7 @@ void SubtitleItem::extractInfo(bool keepHTML = 0, bool doNotIgnoreNonDialogues =
                     if(output[j]== ' ' || output[j]== '\n' )
                     {
                         prevSpaceIndex = j;
-                        //i = prevSpaceIndex;
+                        i = prevSpaceIndex; //compensating the removal and changes in index
                         break;
                     }
                 }
@@ -249,9 +249,12 @@ void SubtitleItem::extractInfo(bool keepHTML = 0, bool doNotIgnoreNonDialogues =
     }
 
     output.erase(std::remove(output.begin(), output.end(), '~'), output.end());
+    std::cout<<output<<"\n";
 
     _justDialogue = output;
 
+    if(_justDialogue.empty())
+        _ignore = true;
 
 }
 
