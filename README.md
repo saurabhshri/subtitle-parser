@@ -8,6 +8,7 @@ ___
 ```cpp
 
 	SubtitleParserFactory *subParserFactory = new SubtitleParserFactory(argv[1]);
+	SubtitleParser *parser = subParserFactory->getParser();
     std::vector<SubtitleItem*> sub = parser->getSubtitles();
 
     ofstream myfile;
