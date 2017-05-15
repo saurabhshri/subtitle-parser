@@ -67,8 +67,9 @@ SubtitleItem::SubtitleItem(std::string startTime,std::string endTime, std::strin
 
 SubtitleItem::SubtitleItem(std::string startTime,std::string endTime, std::string text, bool ignore = false,
 						   std::string justDialogue = NULL , int speakerCount = 0, int nonDialogueCount = 0,
-						   std::vector<std::string> speaker = std::vector<std::string>(),
-						   std::vector<std::string> nonDialogue = std::vector<std::string>())
+                           int styleTagCount, std::vector<std::string> speaker = std::vector<std::string>(),
+						   std::vector<std::string> nonDialogue = std::vector<std::string>(),
+                           std::vector<std::string> styleTags = std::vector<std::string>())
 {
 	_startTime = timeMSec(startTime);
 	_endTime = timeMSec(endTime);
@@ -81,6 +82,8 @@ SubtitleItem::SubtitleItem(std::string startTime,std::string endTime, std::strin
 	_speakerCount = speakerCount;
 	_nonDialogueCount = nonDialogueCount;
 	_speaker = speaker;
+    _styleTagCount = styleTagCount;
+    _styleTag = styleTags;
 	_nonDialogue = nonDialogue;
 }
 
@@ -273,6 +276,10 @@ int SubtitleItem::getNonDialogueCount() const
 {
 	return _nonDialogueCount;
 }
+int SubtitleItem::getStyleTagCount() const
+{
+    return _styleTagCount;
+}
 std::vector<std::string> SubtitleItem::getSpeakerNames()
 {
 	return _speaker;
@@ -280,5 +287,9 @@ std::vector<std::string> SubtitleItem::getSpeakerNames()
 std::vector<std::string> SubtitleItem::getNonDialogueWords()
 {
 	return _nonDialogue;
+}
+std::vector<std::string> SubtitleItem::getStyleTags()
+{
+    return _styleTag;
 }
 
