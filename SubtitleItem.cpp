@@ -151,15 +151,42 @@ bool SubtitleItem::getIgnoreStatus() const
 
 }
 
-void SubtitleItem::extractInfo(bool keepHTML = 0, bool doNotIgnoreNonDialogues = 0)
+void SubtitleItem::extractInfo(bool keepHTML = 0, bool doNotIgnoreNonDialogues = 0, bool doNotRemoveSpeakerNames = 0)
 {
     std::string output;
 
     //stripping HTML tags
     if(!keepHTML)
     {
+        /* REGEX Based approach; <! C++ 11
         std::regex tags("<[^<]*>");
         std::regex_replace(std::back_inserter(output), _text.begin(), _text.end(), tags, "");
+        */
+
+        int countP = 0;
+        for(char& c : output)
+        {
+            if(c=='<')
+            {
+                countP++;
+                c = '~';
+            }
+
+            else
+            {
+                if(countP!=0)
+                {
+                    if(c != '>')
+                        c = '~';
+
+                    else if(c == '>')
+                    {
+                        c = '~';
+                        countP--;
+                    }
+                }
+            }
+        }
     }
 
     //stripping non dialogue data e.g. (applause)
@@ -190,14 +217,14 @@ void SubtitleItem::extractInfo(bool keepHTML = 0, bool doNotIgnoreNonDialogues =
                 }
             }
         }
+    }
 
-        output.erase(std::remove(output.begin(), output.end(), '~'), output.end());
-
-        //Extracting speaker names
-
+    //Extracting speaker names
+    if(!doNotRemoveSpeakerNames)
+    {
         for(int i=0; output[i]!='\0';i++)
         {
-            int colonIndex = 0, prevSpaceIndex = 0, length = 0;
+            int colonIndex = 0, prevSpaceIndex = 0;
             if(output[i]==':')  //speaker found; travel back
             {
                 _speakerCount++;
@@ -212,25 +239,26 @@ void SubtitleItem::extractInfo(bool keepHTML = 0, bool doNotIgnoreNonDialogues =
                         break;
                     }
                 }
-                
 
                 _speaker.push_back(output.substr(prevSpaceIndex+1, colonIndex-prevSpaceIndex-1));
                 output.erase(prevSpaceIndex+1, colonIndex-prevSpaceIndex);
             }
 
-
-
         }
-        std::cout<<output<<std::endl;
+
     }
+
+    output.erase(std::remove(output.begin(), output.end(), '~'), output.end());
+
+    _justDialogue = output;
 
 
 }
 
-std::string SubtitleItem::getDialogue(bool keepHTML = 0, bool doNotIgnoreNonDialogues = 0)
+std::string SubtitleItem::getDialogue(bool keepHTML = 0, bool doNotIgnoreNonDialogues = 0,  bool doNotRemoveSpeakerNames = 0)
 {
 	if(_justDialogue.empty())
-		extractInfo(keepHTML, doNotIgnoreNonDialogues);
+		extractInfo(keepHTML, doNotIgnoreNonDialogues, doNotRemoveSpeakerNames);
 
 	return _justDialogue;
 }
