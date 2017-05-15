@@ -4,6 +4,7 @@
 #include <sstream>
 #include <string>
 #include "SubtitleParser.h"
+#include <regex>
 
 using namespace std;
 
@@ -20,9 +21,10 @@ std::string SubtitleParser::getFileData()
 	while (std::getline(infile, line))
 	{
 		std::istringstream iss(line);
-		allData+=line+'\n';
+		allData += line + "\n";
 	}
 	return allData;
+
 }
 
 SubtitleParser::SubtitleParser(void)
