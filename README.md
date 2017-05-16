@@ -5,6 +5,9 @@ ___
 * SubRip
 
 #### Sample Usage
+
+Please go to the demo directory for a functioning demo.
+
 ```cpp
 
 	SubtitleParserFactory *subParserFactory = new SubtitleParserFactory(argv[1]);
