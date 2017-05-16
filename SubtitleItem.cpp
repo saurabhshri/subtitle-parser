@@ -214,7 +214,7 @@ void SubtitleItem::extractInfo(bool keepHTML, bool doNotIgnoreNonDialogues, bool
 
     _justDialogue = output;
 
-    if(_justDialogue.empty())
+    if(_justDialogue.empty() || _justDialogue == " ")
         _ignore = true;
 
 }
