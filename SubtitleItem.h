@@ -46,8 +46,6 @@ public:
 	void setText(std::string text);
 
 	SubtitleItem(void);
-	//SubtitleItem(int startTime,int endTime,std::string text);
-	//SubtitleItem(std::string startTime,std::string endTime, std::string text);
 	SubtitleItem(std::string startTime,std::string endTime, std::string text, bool ignore = false,
                  std::string justDialogue = "" , int speakerCount = 0, int nonDialogueCount = 0,
                  int styleTagCount = 0, std::vector<std::string> speaker = std::vector<std::string>(),

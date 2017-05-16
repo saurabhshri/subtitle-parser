@@ -7,16 +7,6 @@ SubtitleItem::SubtitleItem(void)
 {
 }
 
-//SubtitleItem::SubtitleItem(std::string startTime,std::string endTime, std::string text)
-//{
-//	_startTime = timeMSec(startTime);
-//	_endTime = timeMSec(endTime);
-//	_text = text;
-//
-//    _startTimeString = startTime;
-//    _endTimeString = endTime;
-//}
-
 SubtitleItem::SubtitleItem(std::string startTime,std::string endTime, std::string text, bool ignore,
 						   std::string justDialogue, int speakerCount, int nonDialogueCount,
                            int styleTagCount, std::vector<std::string> speaker, std::vector<std::string> nonDialogue,
@@ -112,7 +102,14 @@ void SubtitleItem::extractInfo(bool keepHTML, bool doNotIgnoreNonDialogues, bool
         std::regex_replace(std::back_inserter(output), _text.begin(), _text.end(), tags, "");
         */
 
-        //TODO : Before erasing, extract the words.
+        /*
+         * TODO : Before erasing, extract the words.
+         * std::vector<std::string> getStyleTags();
+         * int getStyleTagCount() const;
+         * std::vector<std::string> _styleTag;
+         * int _styleTagCount;
+         */
+
         int countP = 0;
         for(char& c : output)
         {
@@ -140,9 +137,17 @@ void SubtitleItem::extractInfo(bool keepHTML, bool doNotIgnoreNonDialogues, bool
     }
 
     //stripping non dialogue data e.g. (applause)
-    //TODO : Before erasing, extract the words.
+
     if(!doNotIgnoreNonDialogues)
     {
+        /*
+         * TODO : Before erasing, extract the words.
+         * std::vector<std::string> getNonDialogueWords();
+         * int getNonDialogueCount() const;
+         * std::vector<std::string> _nonDialogue;
+         * int _nonDialogueCount;
+         */
+
         int countP = 0;
         for(char& c : output)
         {
@@ -185,13 +190,19 @@ void SubtitleItem::extractInfo(bool keepHTML, bool doNotIgnoreNonDialogues, bool
                     if(output[j]== ' ' || output[j]== '\n' )
                     {
                         prevSpaceIndex = j;
-                        i = prevSpaceIndex; //compensating the removal and changes in index
                         break;
                     }
                 }
 
-                _speaker.push_back(output.substr(prevSpaceIndex+1, colonIndex-prevSpaceIndex-1));
-                output.erase(prevSpaceIndex+1, colonIndex-prevSpaceIndex);
+                i = prevSpaceIndex; //compensating the removal and changes in index
+
+                //check if there's a space after colon i.e. A: Hello vs A:Hello
+                int removeSpace = 0;
+                if(output[colonIndex + 1]==' ')
+                    removeSpace = 1;
+
+                _speaker.push_back(output.substr(prevSpaceIndex + 1, colonIndex - prevSpaceIndex - 1));
+                output.erase(prevSpaceIndex + 1, colonIndex - prevSpaceIndex + removeSpace);
             }
 
         }
@@ -199,7 +210,7 @@ void SubtitleItem::extractInfo(bool keepHTML, bool doNotIgnoreNonDialogues, bool
     }
 
     output.erase(std::remove(output.begin(), output.end(), '~'), output.end());
-    std::cout<<output<<"\n";
+    //std::cout<<output<<"\n";
 
     _justDialogue = output;
 
