@@ -20,7 +20,7 @@ private:
 	std::vector<std::string> _nonDialogue;
     int _styleTagCount;
     std::vector<std::string> _styleTag;
-	void extractInfo(bool keepHTML, bool doNotIgnoreNonDialogues,  bool doNotRemoveSpeakerNames);
+	void extractInfo(bool keepHTML = 0, bool doNotIgnoreNonDialogues = 0,  bool doNotRemoveSpeakerNames = 0);
 public:
 	long int getStartTime() const;
 	long int getEndTime() const;
@@ -29,7 +29,7 @@ public:
 	std::string getStartTimeString() const;
     std::string getEndTimeString() const;
     bool getIgnoreStatus() const;
-    std::string getDialogue(bool keepHTML, bool doNotIgnoreNonDialogues, bool doNotRemoveSpeakerNames);
+    std::string getDialogue(bool keepHTML = 0, bool doNotIgnoreNonDialogues = 0,  bool doNotRemoveSpeakerNames = 0);
 	int getSpeakerCount() const;
 	int getNonDialogueCount() const;
     int getStyleTagCount() const;
@@ -46,11 +46,13 @@ public:
 	void setText(std::string text);
 
 	SubtitleItem(void);
-	SubtitleItem(int startTime,int endTime,std::string text);
-	SubtitleItem(std::string startTime,std::string endTime, std::string text);
-	SubtitleItem(std::string startTime,std::string endTime, std::string text, bool ignore,
-			std::string justDialogue, int speakerCount, int nonDialogueCount, int styleTagCount,
-			std::vector<std::string> speaker, std::vector<std::string> nonDialogue, std::vector<std::string> styleTags);
+	//SubtitleItem(int startTime,int endTime,std::string text);
+	//SubtitleItem(std::string startTime,std::string endTime, std::string text);
+	SubtitleItem(std::string startTime,std::string endTime, std::string text, bool ignore = false,
+                 std::string justDialogue = "" , int speakerCount = 0, int nonDialogueCount = 0,
+                 int styleTagCount = 0, std::vector<std::string> speaker = std::vector<std::string>(),
+                 std::vector<std::string> nonDialogue = std::vector<std::string>(),
+                 std::vector<std::string> styleTags = std::vector<std::string>());
 	~SubtitleItem(void);
 };
 

@@ -3,73 +3,24 @@
 #include <regex>
 #include "SubtitleItem.h"
 
-/*
-#if (defined (WIN32) || defined (_WIN32_WCE)) && (defined(__MINGW32__) || !defined(__GNUC__))
-#define LLD_M "I64d"
-#define LLU_M "I64u"
-#define LLD "%I64d"
-#define LLU "%I64u"
-#elif defined (__SYMBIAN32__)
-#define LLD_M "d"
-#define LLU_M "u"
-#define LLD "%d"
-#define LLU "%u"
-#elif defined(__DARWIN__) || defined(__APPLE__)
-#define LLD_M "lld"
-#define LLU_M "llu"
-#define LLD "%lld"
-#define LLU "%llu"
-#elif defined(_LP64) // Unix 64 bits
-#define LLD_M "ld"
-#define LLU_M "lu"
-#define LLD "%ld"
-#define LLU "%lu"
-#else // Unix 32 bits
-#define LLD_M "lld"
-#define LLU_M "llu"
-#define LLD "%lld"
-#define LLU "%llu"
-#endif
-
-char* timestamp_to_srttime(unsigned long long milliseconds) {
-    unsigned long long millis = milliseconds % 1000;
-    milliseconds /= 1000;
-    unsigned long long seconds = milliseconds % 60;
-    milliseconds /= 60;
-    unsigned long long minutes = milliseconds % 60;
-    milliseconds /= 60;
-    unsigned long long hours = milliseconds;
-
-    char* buf = new char[(sizeof(char) * 15)];
-    sprintf(buf, "%02" LLD_M ":%02" LLD_M ":%02" LLD_M ",%03" LLD_M, hours, minutes, seconds, millis);
-    return buf;
-}
-*/
-
 SubtitleItem::SubtitleItem(void)
 {
 }
 
-SubtitleItem::SubtitleItem(std::string startTime,std::string endTime, std::string text)
-{
-	_startTime = timeMSec(startTime);
-	_endTime = timeMSec(endTime);
-	_text = text;
-
-    _startTimeString = startTime;
-    _endTimeString = endTime;
-
-//    char *time = new char[1024];
-//    time = timestamp_to_srttime(_startTime);
+//SubtitleItem::SubtitleItem(std::string startTime,std::string endTime, std::string text)
+//{
+//	_startTime = timeMSec(startTime);
+//	_endTime = timeMSec(endTime);
+//	_text = text;
 //
-//    std::cout<<startTime<<" ---> "<<time<<std::endl;
-}
+//    _startTimeString = startTime;
+//    _endTimeString = endTime;
+//}
 
-SubtitleItem::SubtitleItem(std::string startTime,std::string endTime, std::string text, bool ignore = false,
-						   std::string justDialogue = NULL , int speakerCount = 0, int nonDialogueCount = 0,
-                           int styleTagCount, std::vector<std::string> speaker = std::vector<std::string>(),
-						   std::vector<std::string> nonDialogue = std::vector<std::string>(),
-                           std::vector<std::string> styleTags = std::vector<std::string>())
+SubtitleItem::SubtitleItem(std::string startTime,std::string endTime, std::string text, bool ignore,
+						   std::string justDialogue, int speakerCount, int nonDialogueCount,
+                           int styleTagCount, std::vector<std::string> speaker, std::vector<std::string> nonDialogue,
+                           std::vector<std::string> styleTags)
 {
 	_startTime = timeMSec(startTime);
 	_endTime = timeMSec(endTime);
@@ -129,11 +80,6 @@ void SubtitleItem::setText(std::string text)
 	_text = text;
 }
 
-SubtitleItem::~SubtitleItem(void)
-{
-
-}
-
 std::string SubtitleItem::getStartTimeString() const
 {
     return _startTimeString;
@@ -154,7 +100,7 @@ bool SubtitleItem::getIgnoreStatus() const
 
 }
 
-void SubtitleItem::extractInfo(bool keepHTML = 0, bool doNotIgnoreNonDialogues = 0, bool doNotRemoveSpeakerNames = 0)
+void SubtitleItem::extractInfo(bool keepHTML, bool doNotIgnoreNonDialogues, bool doNotRemoveSpeakerNames)
 {
     std::string output = _text;
 
@@ -166,6 +112,7 @@ void SubtitleItem::extractInfo(bool keepHTML = 0, bool doNotIgnoreNonDialogues =
         std::regex_replace(std::back_inserter(output), _text.begin(), _text.end(), tags, "");
         */
 
+        //TODO : Before erasing, extract the words.
         int countP = 0;
         for(char& c : output)
         {
@@ -193,7 +140,7 @@ void SubtitleItem::extractInfo(bool keepHTML = 0, bool doNotIgnoreNonDialogues =
     }
 
     //stripping non dialogue data e.g. (applause)
-    //EXPERIMENTAL
+    //TODO : Before erasing, extract the words.
     if(!doNotIgnoreNonDialogues)
     {
         int countP = 0;
@@ -261,7 +208,7 @@ void SubtitleItem::extractInfo(bool keepHTML = 0, bool doNotIgnoreNonDialogues =
 
 }
 
-std::string SubtitleItem::getDialogue(bool keepHTML = 0, bool doNotIgnoreNonDialogues = 0,  bool doNotRemoveSpeakerNames = 0)
+std::string SubtitleItem::getDialogue(bool keepHTML, bool doNotIgnoreNonDialogues,  bool doNotRemoveSpeakerNames)
 {
 	if(_justDialogue.empty())
 		extractInfo(keepHTML, doNotIgnoreNonDialogues, doNotRemoveSpeakerNames);
@@ -291,5 +238,9 @@ std::vector<std::string> SubtitleItem::getNonDialogueWords()
 std::vector<std::string> SubtitleItem::getStyleTags()
 {
     return _styleTag;
+}
+SubtitleItem::~SubtitleItem(void)
+{
+
 }
 
